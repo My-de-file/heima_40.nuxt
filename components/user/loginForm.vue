@@ -4,7 +4,7 @@
       <el-input v-model="form.username" placeholder="用户名/手机"></el-input>
     </el-form-item>
 
-    <el-form-item class="form-item">
+    <el-form-item class="form-item" prop="password">
       <el-input v-model="form.password" :rules="rules.password" placeholder="密码" type="password"></el-input>
     </el-form-item>
 
@@ -12,17 +12,17 @@
       <nuxt-link to="#">忘记密码</nuxt-link>
     </p>
 
-    <el-button class="submit" type="primary" @click="handleLoginSubmit(form)">登录</el-button>
+    <el-button class="submit" type="primary" @click="handleLoginSubmit('form')">登录</el-button>
   </el-form>
 </template>
 
 <script>
 export default {
   data() {
-    var validatePass = (rule, value, callback) => {
+    var validatename = (rule, value, callback) => {
       if (/^1(3|4|5|7|8)\d{9}$/.test(value)) {
-        console.log(1);
-      } else{
+        callback();
+      } else {
         callback(new Error("请输入正确的用户名"));
       }
     };
@@ -34,15 +34,26 @@ export default {
       },
       // 表单规则
       rules: {
-        username: [{ validator: validatePass, trigger: "blur" }],
-        password: []
+        username: [{ validator: validatename, trigger: "blur" }],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 16, message: "长度在 6 到 16 位数", trigger: "blur" }
+        ]
       }
     };
   },
   methods: {
     // 提交登录
     handleLoginSubmit(form) {
-      this.$emit("click", form);
+      // console.log(this.$refs[form]);
+      
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+          this.$emit("click", this.form);
+          } else {
+            return false;
+          }
+        });
     }
   }
 };

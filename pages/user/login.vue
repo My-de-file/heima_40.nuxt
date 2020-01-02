@@ -14,21 +14,23 @@
         </el-row>
 
         <!-- 登录功能组件 -->
-        <LoginForm @click="handleLoginSubmit"></LoginForm>
+        <LoginForm @click="handleLoginSubmit" v-if="currentTab === 0"></LoginForm>
 
         <!-- 注册功能组件 -->
-        <!-- <RegisterForm v-if="currentTab === 1" /> -->
+        <RegisterForm @click="app" v-if="currentTab === 1" />
       </div>
     </el-row>
   </div>
 </template>
 
 <script>
-// 引入登录组件
+// 引入登录组件  registerForm
 import LoginForm from "@/components/user/loginForm.vue";
+import RegisterForm from "@/components/user/registerForm.vue";
+
 export default {
   components: {
-    LoginForm
+    LoginForm,RegisterForm
   },
   data() {
     return {
@@ -39,12 +41,27 @@ export default {
     handleChangeTab(index) {
       this.currentTab = index;
     },
-    handleLoginSubmit(from){
-        // console.log(from);
-        this.$store.commit('user/actState', '456')
+    handleLoginSubmit(data){
+        // console.log(1);
+        // this.$store.commit('user/actState', '456')
+        // console.log(this.$store.dispatch);
+       this.$store.dispatch('user/hronouswrite',data).then(res=>{
+        //  console.log(res);
+        if(res){
+          this.$message({
+          message: '恭喜你，登录成功了',
+          type: 'success'
+        });
+        this.$router.go(-1);//返回上一层
+        }
+       })
+       
         
+    },
+    app(i){
+      this.currentTab = i
     }
-  }
+  },
 };
 </script>
 
