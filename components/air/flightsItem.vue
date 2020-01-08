@@ -46,8 +46,8 @@
             </el-col>
             <el-col :span="5" class="price">￥{{value.par_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">选定</el-button>
-              <p>剩余：{{value.ota_id}}</p>
+              <el-button type="warning" size="mini" @click="designate(index)">选定</el-button>
+              <p>剩余：{{value.discount}}</p>
             </el-col>
           </el-row>
         </el-col>
@@ -70,7 +70,11 @@ export default {
   },
   data() {
     return {
-      isShow: false
+      isShow: false,
+      user:{
+        id:'',
+        seat_xid:''
+      }
     };
   },
   computed: {
@@ -78,8 +82,6 @@ export default {
       var departitem = this.data.dep_time.split(":");
       var arritem = this.data.arr_time.split(":");
       if (departitem[0] > arritem[0]) {
-        // console.log(departitem[0]);
-        // console.log(arritem[0]);
         arritem[0] = (+arritem[0] + 24);
         // console.log(arritem[0]);
       }
@@ -93,6 +95,21 @@ export default {
       let hous = Math.floor(arr / 60);
       let err = arr % 60;
       return `${hous}时${err}分`
+    }
+  },
+  methods: {
+    designate(index){
+      // console.log(this.data.seat_infos[index].seat_xid);
+      this.$axios({
+        url:`/airs/${this.data.id}`,
+        params:{
+          seat_xid:this.data.seat_infos[index].seat_xid
+          }
+      }).then(res=>{
+        this.user.id = this.data.id
+        this.user.seat_xid = this.data.seat_infos[index].seat_xid
+        this.$router.push({ path: 'order', query:this.user})
+      })
     }
   }
 };

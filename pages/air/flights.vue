@@ -21,11 +21,8 @@
           :total="totil"
         ></el-pagination>
       </div>
-
       <!-- 侧边栏 -->
-      <div class="aside">
-        <!-- 侧边栏组件 -->
-      </div>
+      <FlightsAside/>
     </el-row>
   </section>
 </template>
@@ -38,7 +35,9 @@ import FlightsListHead from "@/components/air/flightsListHead";
 import FlightsItem from "@/components/air/flightsItem";
 
 import FlightsFilters from "@/components/air/flightsFilters";
-export default {
+
+import FlightsAside from '@/components/air/flightsAside'
+export default { 
   data() {
     return {
       flightsdata: {
@@ -58,7 +57,8 @@ export default {
   components: {
     FlightsListHead,
     FlightsItem,
-    FlightsFilters
+    FlightsFilters,
+    FlightsAside
   },
   mounted() {
     this.$axios({
@@ -74,13 +74,13 @@ export default {
       this.filtration = res.data;
       this.flightsdata = { ...res.data };
       this.totil = this.flightsdata.flights.length;
-    //   console.log(this.filtration);
+      // console.log(res.data.info);
     });
   },
   methods: {
     // 过滤条件
     select1(v){
-        console.log(v);
+        // console.log(v);
         this.flightsdata.flights = v
         this.totil = v.length
     },

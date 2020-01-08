@@ -207,6 +207,7 @@ export default {
         path: "/air/flights",
         query:form
       });
+     this.$store.commit('air/increment',form)
     },
     handleblur1() {
       // console.log(this.mydata[0]);
