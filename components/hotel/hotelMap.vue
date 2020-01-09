@@ -22,13 +22,61 @@
 
 <script>
 export default {
-  methods: {},
+  props:['city'],
+  data () {
+    return {
+      // city:''
+    }
+  },
+  methods: {
+    getMap() {
+      var map = new AMap.Map("map-rigth", {
+        resizeEnable: true
+      });
+      AMap.service(["AMap.PlaceSearch"], function() {
+        //构造地点查询类
+        var placeSearch = new AMap.PlaceSearch({
+          map: map, // 展现结果的地图实例
+          autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+        });
+        // console.log(data);
+        //关键字查询
+        placeSearch.search('广州市酒店');
+      });
+    }
+  },
+  watch: {
+    city(){
+      // console.log(this.city);
+      // this.$axios({
+      //   url:'/hotels',
+      //   data:{
+      //     city:this.city.id
+      //   }
+      // }).then(res=>{
+      //   // console.log(res);
+      //   // this.$emit('find',res.data.data)
+      // })
+      var data = this.city.name
+      var map = new AMap.Map("map-rigth", {
+        resizeEnable: true
+      });
+      AMap.service(["AMap.PlaceSearch"], function() {
+        //构造地点查询类
+        var placeSearch = new AMap.PlaceSearch({
+          map: map, // 展现结果的地图实例
+          autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+        });
+        // console.log(data);
+        //关键字查询
+        placeSearch.search(data);
+      });
+    }
+  },
   mounted() {
-      let map = new AMap.Map("map-rigth", {
-      resizeEnable: true, //是否监控地图容器尺寸变化
-      zoom: 11, //初始化地图层级
-      center: [113.262784,23.128967] //初始化地图中心点
-    });
+    setTimeout(() => {
+      this.getMap();
+    }, 1);
   }
 };
 </script>

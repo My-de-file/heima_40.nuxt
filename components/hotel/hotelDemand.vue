@@ -33,37 +33,46 @@
         </div>
       </div>
     </div>
-    <div class="comte">
-      <div class="comte-left">
-        <img src="http://img1.imgtn.bdimg.com/it/u=4238142487,3274484296&fm=26&gp=0.jpg" alt />
-      </div>
-      <div class="comte-commt">
-        <p>1</p>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-      </div>
-      <div class="comte-rigth">
-        <div>
-          1
-          <span>22</span>
+    <div v-if="cityshow">
+      <div class="comte" v-for="(item,index) in cityHotel" :key="index">
+        <div class="comte-left">
+          <img :src="item.photos" alt />
         </div>
-        <div>
-          1
-          <span>22</span>
+        <div class="comte-commt">
+          <p>{{item.name}}</p>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
         </div>
-        <div>
-          1
-          <span>22</span>
+        <div class="comte-rigth">
+          <div>
+            1
+            <span>22</span>
+          </div>
+          <div>
+            1
+            <span>22</span>
+          </div>
+          <div>
+            1
+            <span>22</span>
+          </div>
         </div>
       </div>
     </div>
-    <el-pagination layout="prev, pager, next" next-text='下一页' prev-text='上一页' :total="50"></el-pagination>
+    <el-pagination
+      v-if="cityHotel"
+      layout="prev, pager, next"
+      next-text="下一页"
+      prev-text="上一页"
+      :total="50"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
 export default {
+  props: ["data"],
   data() {
     return {
       value2: 4000,
@@ -71,7 +80,9 @@ export default {
       options: [],
       selectBox: ["1", "2", "3", "4"],
       hoverShow: "",
-      hotelSele: ["住宿等级", "住宿类型", "酒店设施", "酒店品牌"]
+      hotelSele: ["住宿等级", "住宿类型", "酒店设施", "酒店品牌"],
+      cityHotel: [],
+      cityshow:false
     };
   },
   methods: {
@@ -85,6 +96,21 @@ export default {
     hoverUop() {
       this.hoverShow = "";
     }
+  },
+  watch: {
+    data() {
+      console.log(this.data);
+      this.cityshow = true
+      this.$axios({
+        url: "/hotels",
+        data: {
+          city: this.data.city
+        }
+      }).then(res => {
+        this.cityHotel = res.data.data;
+        console.log(this.cityHotel);
+      });
+    }
   }
 };
 </script>
@@ -93,7 +119,7 @@ export default {
 #demand {
   .comte {
     //   float: left;
-    border: 1px solid #000;
+    // border: 1px solid #000;
     height: 250px;
     display: flex;
     justify-content: flex-start;
@@ -102,8 +128,8 @@ export default {
       width: 320px;
       height: 210px;
       img {
-        width: 320px;
-        height: 210px;
+        width: 100%;
+        height: 100%;
       }
     }
     .comte-rigth {
@@ -122,9 +148,10 @@ export default {
     }
     .comte-commt {
       width: 400px;
+      margin-left: 20px;
       > p {
         color: #000;
-        font-size: 30px;
+        font-size: 24px;
       }
     }
   }
@@ -244,7 +271,7 @@ export default {
 }
 @keyframes myfirst {
   0% {
-    height: 0;
+    height: 0px;
   }
   100% {
     height: 200px;

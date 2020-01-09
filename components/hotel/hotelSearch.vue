@@ -6,7 +6,7 @@
         class="inline-input"
         v-model="state2"
         :fetch-suggestions="querySearch"
-        placeholder="请输入内容"
+        placeholder="请输入城市"
         :trigger-on-focus="false"
         @select="handleSelect"
       ></el-autocomplete>
@@ -30,7 +30,7 @@
         ></el-option>
       </el-option-group>
     </el-select>
-      <el-button type="primary" style="margin-left: 15px;">查看价格</el-button>
+    <el-button type="primary" style="margin-left: 15px;">查看价格</el-button>
   </div>
 </template>
 
@@ -38,8 +38,6 @@
 export default {
   data() {
     return {
-      restaurants: ['1','2','3'],
-      state1: "",
       state2: "",
       options: [
         {
@@ -77,52 +75,48 @@ export default {
           ]
         }
       ],
-      value: ""
+      value: "",
+      return: []
     };
   },
   methods: {
     querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString
-        ? restaurants.filter(this.createFilter(queryString))
-        : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(this.restaurants);
+      // console.log(queryString);
+      this.$axios({
+        url: "/cities",
+        params: {
+          name: queryString
+        }
+      }).then(res => {
+        this.return = res.data.data.map(v => {
+           v.value = v.name
+           return v
+        });
+        console.log(this.return);
+        cb(this.return);
+      });
     },
-    createFilter(queryString) {
-      return restaurant => {
-        return (
-          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
-          0
-        );
-      };
-    },
-    loadAll() {
-      return ["1", "2", "3"];
-    },
-    handleSelect() {
-      console.log(1);
-      
+    handleSelect(value) {
+      this.$emit('click',value)
     }
   }
 };
 </script>
 
 <style lang='less' scoped>
-#search{
-    display: flex;
-    justify-content:flex-start;
-    width: 100%;
-    .block{
+#search {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  .block {
     width: 33%;
     margin-right: 10px;
-    /deep/ .el-date-editor{
-        width: 100%;
+    /deep/ .el-date-editor {
+      width: 100%;
     }
-    }
-    .inline-input{
-        margin-right: 15px;
-    }
-
+  }
+  .inline-input {
+    margin-right: 15px;
+  }
 }
 </style>

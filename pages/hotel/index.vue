@@ -8,10 +8,10 @@
         </el-breadcrumb>
       </div>
       <div name='search'>
-          <HotelSearch/>
+      <HotelSearch  @click="hendlClick($event)"></HotelSearch>
       </div>
-      <HotelMap/>
-      <HotelDemand/>
+      <HotelMap :city='scity' @find='findHendl'></HotelMap>
+      <HotelDemand :data='scity'></HotelDemand>
     </div>
   </div>
 </template>
@@ -23,11 +23,20 @@ import HotelDemand from '@/components/hotel/hotelDemand'
 export default {
   data() {
     return {
+      scity:''
     };
   },
   components: {
       HotelSearch,HotelMap,HotelDemand
   },
+  methods: {
+     hendlClick($event){
+       this.scity = $event
+     },
+     findHendl($event){
+      //  console.log($event);
+     }
+  }
 };
 </script>
 
