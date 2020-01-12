@@ -22,31 +22,49 @@
 
 <script>
 export default {
-  props:['city'],
-  data () {
+  props: ["city"],
+  data() {
     return {
       // city:''
-    }
+    };
   },
   methods: {
     getMap() {
       var map = new AMap.Map("map-rigth", {
         resizeEnable: true
       });
-      AMap.service(["AMap.PlaceSearch"], function() {
-        //构造地点查询类
-        var placeSearch = new AMap.PlaceSearch({
-          map: map, // 展现结果的地图实例
-          autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
-        });
-        // console.log(data);
-        //关键字查询
-        placeSearch.search('广州市酒店');
+      // AMap.service(["AMap.PlaceSearch"], function() {
+      //   //构造地点查询类
+      //   var placeSearch = new AMap.PlaceSearch({
+      //     map: map, // 展现结果的地图实例
+      //     autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+      //   });
+      //   // console.log(data);
+      //   //关键字查询
+      //   placeSearch.search("广州市酒店");
+      // });
+      var marker1 = new AMap.Marker({
+        position: new AMap.LngLat(116.39, 39.9), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        title: "北京"
       });
+      var marker2 = new AMap.Marker({
+        position: new AMap.LngLat(113.267521, 23.133041), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        title: "广州"
+      });
+      var marker3 = new AMap.Marker({
+        position: new AMap.LngLat(121.471638, 31.202575), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+        title: "上海"
+      });
+      console.log(marker1);
+      
+      var markerList = [marker1, marker2, marker3];
+      console.log(markerList);
+      
+      map.add(markerList);
     }
   },
   watch: {
-    city(){
+    city() {
       // console.log(this.city);
       // this.$axios({
       //   url:'/hotels',
@@ -57,19 +75,29 @@ export default {
       //   // console.log(res);
       //   // this.$emit('find',res.data.data)
       // })
-      var data = this.city.name
+      var data = this.city.name;
       var map = new AMap.Map("map-rigth", {
         resizeEnable: true
       });
-      AMap.service(["AMap.PlaceSearch"], function() {
-        //构造地点查询类
-        var placeSearch = new AMap.PlaceSearch({
-          map: map, // 展现结果的地图实例
-          autoFitView: true // 是否自动调整地图视野使绘制的 Marker点都处于视口的可见范围
+      console.log(this.city.id);
+      var datalist = [];
+      this.$axios({
+        url: "/hotels",
+        data: {
+          city: this.city.id
+        }
+      }).then(res => {
+        datalist = res.data.data;
+        var marker = datalist.map(v => {
+          return new AMap.Marker({
+            position: new AMap.LngLat(
+              v.location.longitude,
+              v.location.latitude
+            ), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            title: v.name
+          });
         });
-        // console.log(data);
-        //关键字查询
-        placeSearch.search(data);
+        map.add(marker);
       });
     }
   },
